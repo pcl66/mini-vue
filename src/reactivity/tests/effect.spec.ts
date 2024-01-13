@@ -33,4 +33,30 @@ describe('effect', () => {
     expect(foo).toBe(12)
     expect(result).toBe('foo')
   })
+
+  it('scheduler', () => {
+    let dummy
+    let run
+
+    const scheduler = jest.fn(() => {
+      run = runner
+    })
+
+    const obj = reactive({foo: 1})
+    const runner = effect(() => {
+      dummy = obj.foo
+    },{
+      scheduler
+    })
+    expect(scheduler).not.toHaveBeenCalled()
+    expect(dummy).toBe(1)
+    obj.foo++
+    // first trigger should call scheduler
+    expect(scheduler).toHaveBeenCalledTimes(1)
+    // should not run yet
+    expect(dummy).toBe(1)
+    // manual run
+    run()
+    expect(dummy).toBe(2)
+  })
 })
