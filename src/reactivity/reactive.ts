@@ -2,15 +2,16 @@ import { track, trigger } from "./effect"
 
 export function reactive(raw) {
   return new Proxy(raw, {
-    get(target, p, receiver) {
-      const res = Reflect.get(target, p)
+    get(target, key, receiver) {
+      const res = Reflect.get(target, key)
       // todo 收集依赖
-      track(target, p)
+      track(target, key)
       return res
     },
-    set(target, p, newValue, receiver) {
-      const res = Reflect.set(target, p, newValue)
-      trigger(target, p)
+    set(target, key, newValue, receiver) {
+      const res = Reflect.set(target, key, newValue)
+      // 触发依赖
+      trigger(target, key)
       return res
     },
   })
