@@ -1,0 +1,1 @@
+export const isType = data => typeof data
